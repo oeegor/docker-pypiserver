@@ -1,68 +1,53 @@
-FROM debian:wheezy
-MAINTAINER Jean-Christophe Saad-Dupuy <jc.saaddupuy@fsfe.org>
+FROM phusion/baseimage:0.9.17
+
+EXPOSE 8080
+CMD ["/sbin/my_init"]
 
 ENV DEBIAN_FRONTEND noninteractive
 
-##########################
-# system update
-##########################
-RUN apt-get update -qq
-RUN apt-get upgrade -qq -y
-##########################
+RUN echo 'v1' \
+    && sed -i -e 's/archive.ubuntu.com/mirror.yandex.ru/g' /etc/apt/sources.list \
+    && apt-get update -qq \
+    && apt-get upgrade -qq \
 
-##########################
-# python stuffs installation
-RUN apt-get install -qq -y python2.7 python-pip
-##########################
+    && apt-get install -qq \
+        python2.7 \
+        python-pip
+        curl \
+        gettext \
+        git \
+        libffi-dev \
+        libjpeg8-dev \
+        libpq-dev \
+        libpq5 \
+        libssl-dev \
+        nginx \
+        postfix \
+        ruby \
+        ruby-dev \
+        run-one \
 
-##########################
-# pypiserver installation
-##########################
-RUN pip install pypiserver
-RUN pip install passlib
-##########################
+    && locale-gen en_US.UTF-8 ru_RU.UTF-8 \
+    && apt-get purge -y ruby-dev \
 
+    # cleanup
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm /var/log/alternatives.log /var/log/apt/history.log /var/log/apt/term.log /var/log/dpkg.log \
 
-##########################
-RUN useradd -d /home/pypiserver -m pypiserver
-##########################
-
-##########################
-# create the /data folder and symlink to the default folder
-##########################
-RUN mkdir -p /data/packages
-RUN chown -R pypiserver /data/packages
-RUN ln -s /data/packages /home/pypiserver/packages
-RUN chown -R pypiserver /home/pypiserver/packages
-##########################
-
-##########################
-# create the /config folder and symlink to the default folder
-##########################
-RUN mkdir -p /config
-RUN chown -R pypiserver /data/packages
-##########################
-
-VOLUME ["/data/packages"]
+    pip install pypi-server passlib
 
 
-##########################
-# exposes the default port
-##########################
-EXPOSE 8080
-##########################
+
+
+RUN useradd -d /home/pypiserver -m pypiserver \
+
+    && mkdir -p /home/pypiserver/packages /home/pypiserver/config \
+    && chown -R pypiserver /home/pypiserver
+
+COPY etc/ /etc/
+VOLUME ["/home/pypiserver/config", "/home/pypiserver/packages"]
 
 # Fix empty $HOME
 ENV HOME /home/pypiserver
 USER pypiserver
-
-ADD htaccess /config/.htaccess
-
 WORKDIR /home/pypiserver
-
-# Always starts with the .htaccess
-ENTRYPOINT ["/usr/local/bin/pypi-server", "-P", "/config/.htaccess"]
-
-# Hack : add a CMD with default value to enable passing other options
-CMD ["-p", "8080"]
-

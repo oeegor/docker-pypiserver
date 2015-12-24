@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+exec 2>&1
+exec chpst -u pypiserver /usr/local/bin/pypi-server -P /home/pypiserver/config/.htaccess

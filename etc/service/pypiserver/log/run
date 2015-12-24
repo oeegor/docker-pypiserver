@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+
+LOG=/var/log/pypiserver
+
+test -d "$LOG" || mkdir -p -m 2750 "$LOG" && chown pypiserver "$LOG"
+exec chpst -u pypiserver svlogd "$LOG"
