@@ -6,4 +6,4 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 # m h dom mon dow user command
 
 # daily
-30 2 * * *  root cd /var/www/mota/ && run-one ./manage.py call_feedback_service ostrovok --traceback
+# 30 2 * * *  root cd /var/www/mota/ && run-one ./manage.py call_feedback_service ostrovok --traceback
