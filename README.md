@@ -82,5 +82,3 @@ prefixing the modulename with the alias given in indexserver (in our case, :DEV:
 
     [testenv]
     deps= :DEV:your_awesome_module
-
-
