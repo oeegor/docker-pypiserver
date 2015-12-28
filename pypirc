@@ -1,0 +1,10 @@
+# this file should be ~/.pypirc
+
+[distutils]
+index-servers =
+    ostrovok
+
+[ostrovok]
+repository:http://pip.ostrovok.ru
+username:username
+password:password
