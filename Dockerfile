@@ -1,7 +1,5 @@
 FROM debian:jessie
 
-EXPOSE 8080
-
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN echo 'v1' \
@@ -19,10 +17,7 @@ RUN echo 'v1' \
     && rm /var/log/alternatives.log /var/log/apt/history.log /var/log/apt/term.log /var/log/dpkg.log
 
 RUN pip install --upgrade cffi \
-    && pip install pypi-server passlib
-
-
-
+    && pip install pypiserver[passlib]
 
 RUN useradd -m pypiserver \
     && mkdir -p /home/pypiserver/packages /home/pypiserver/config \
@@ -31,7 +26,12 @@ RUN useradd -m pypiserver \
 # COPY etc/ /etc/
 
 ENV HOME /home/pypiserver
+EXPOSE 8080
 USER pypiserver
+VOLUME /home/pypiserver/config /home/pypiserver/packages
 WORKDIR /home/pypiserver
 
-ENTRYPOINT ["pypi-server"]
+ENTRYPOINT ["/usr/local/bin/pypi-server"]
+
+# Hack : add a CMD with default value to enable passing other options
+CMD ["--port=8080"]
