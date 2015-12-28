@@ -34,4 +34,4 @@ VOLUME /home/pypiserver/packages
 ENTRYPOINT ["/usr/local/bin/pypi-server"]
 
 # Hack : add a CMD with default value to enable passing other options
-CMD ["--port=8080"]
+CMD ["--port=8080", "--passwords=.htaccess"]
