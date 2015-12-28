@@ -20,16 +20,17 @@ RUN pip install --upgrade cffi \
     && pip install pypiserver[passlib]
 
 RUN useradd -m pypiserver \
-    && mkdir -p /home/pypiserver/packages /home/pypiserver/config \
     && chown -R pypiserver /home/pypiserver
 
 # COPY etc/ /etc/
 
 ENV HOME /home/pypiserver
-EXPOSE 8080
-USER pypiserver
-VOLUME /home/pypiserver/config /home/pypiserver/packages
 WORKDIR /home/pypiserver
+
+USER pypiserver
+
+EXPOSE 8080
+VOLUME /home/pypiserver/config /home/pypiserver/packages
 
 ENTRYPOINT ["/usr/local/bin/pypi-server"]
 
