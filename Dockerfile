@@ -30,7 +30,7 @@ WORKDIR /home/pypiserver
 USER pypiserver
 
 EXPOSE 8080
-VOLUME /home/pypiserver/config /home/pypiserver/packages
+VOLUME /home/pypiserver/packages
 
 ENTRYPOINT ["/usr/local/bin/pypi-server"]
 
