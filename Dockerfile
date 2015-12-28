@@ -22,10 +22,9 @@ RUN pip install --upgrade cffi \
 RUN useradd -m pypiserver \
     && chown -R pypiserver /home/pypiserver
 
-# COPY etc/ /etc/
-
 ENV HOME /home/pypiserver
 WORKDIR /home/pypiserver
+COPY htaccess .htaccess
 
 USER pypiserver
 
